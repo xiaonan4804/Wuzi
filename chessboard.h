@@ -11,6 +11,9 @@ class ChessBoard : public QFrame
 public:
     ChessBoard(QWidget *parent);
     ChessLocation MyLocation;
+    bool isWin(bool player);
+    int fineFive(int x, int y, bool player);
+    int fineFive2(int x, int y, bool player);
 
 private:
     void paintEvent(QPaintEvent * event);

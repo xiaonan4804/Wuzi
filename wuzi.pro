@@ -15,10 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     chessboard.cpp \
-    chesslocation.cpp
+    chesslocation.cpp \
+    winning.cpp
 
 HEADERS  += mainwindow.h \
     chessboard.h \
-    chesslocation.h
+    chesslocation.h \
+    winning.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    winning.ui
+
+RESOURCES += \
+    pic.qrc
