@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <string>
+#include <QImage>
+#include <QPixmap>
+#include "winning.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,8 +29,16 @@ private slots:
     void TestBoard();
 
 private:
+    void PlayerInfo(void);
+    void PlayerWinning();
     Ui::MainWindow *ui;
-    bool player = false;
+    bool player = false;    //player1: false
+    QImage image1;
+    QImage image2;
+    QString filePath1 = "D:/QT/Project/0224Wuzi/wuzi/cat2.jpg";
+    QString filePath2 = "D:/QT/Project/0224Wuzi/wuzi/photogirl.jpg";
+
+
 };
 
 #endif // MAINWINDOW_H

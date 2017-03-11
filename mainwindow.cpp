@@ -2,11 +2,13 @@
 #include "ui_mainwindow.h"
 #include <QPushButton>
 #include <QDebug>
+#include <QFont>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    /*初始化窗口大小和位置*/
     ui->setupUi(this);
     ui->centralWidget->resize(1000, 800);
     ui->frame->setGeometry(10, 10, 600, 600);
@@ -14,10 +16,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton_reset->setGeometry(700, 20, 75, 25);
     ui->pushButton_test->setGeometry(700, 50, 75, 25);
     ui->lineEdit_position->setGeometry(700,80, 150, 20);
+    ui->label_pic1->setGeometry(700, 120, 200, 200);
+    ui->label_pic2->setGeometry(700, 120, 200, 200);
+    ui->label_playerN->setGeometry(700, 350, 150, 50);
 
+    /*鼠标事件*/
     this->centralWidget()->setMouseTracking(true);
     this->setMouseTracking(true);
     ui->frame->setMouseTracking(true);
+
+    /*头像图片*/
+    image1.load(filePath1);
+    image2.load(filePath2);
+    ui->label_pic1->setPixmap(QPixmap::fromImage(image1.scaled(1080/8, 1622/8)));
+    ui->label_pic2->setPixmap(QPixmap::fromImage(image2.scaled(1080/8, 1622/8)));
+    ui->label_pic1->setVisible(true);
+    ui->label_pic2->setVisible(false);
+    //QFont font(24);
+    //ui->label_playerN->setFont(font);
 
     connect(ui->pushButton_reset, SIGNAL(clicked(bool)), this, SLOT(ResetBoard()));
     connect(ui->pushButton_test, SIGNAL(clicked(bool)), this, SLOT(TestBoard()));
@@ -30,7 +46,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::ResetBoard()
 {
-    qDebug("reset pressed\n");
+    //qDebug("reset pressed\n");
     for (int i=0; i<10; i++)
     {
         for (int j=0; j<10; j++)
@@ -39,15 +55,11 @@ void MainWindow::ResetBoard()
         }
     }
     ui->frame->update();
-
 }
 
 void MainWindow::TestBoard()
 {
     qDebug("test pressed\n");
-    ui->frame->MyLocation.Location[5][5] = 1;
-    ui->frame->MyLocation.Location[4][4] = -1;
-    ui->frame->update();
 
 }
 
@@ -70,14 +82,60 @@ void MainWindow::mouseReleaseEvent ( QMouseEvent * event )
         if (player == false)
         {
             ui->frame->MyLocation.Location[(pos.x()-10)/60][(pos.y()-10)/60] = 1;
+            ui->frame->update();
+            PlayerInfo();
+            bool iswin = ui->frame->isWin(player);
+            if (iswin == true)
+            {
+                PlayerWinning();
+            }
             player = true;
         }
         else
         {
             ui->frame->MyLocation.Location[(pos.x()-10)/60][(pos.y()-10)/60] = -1;
+            ui->frame->update();
+            PlayerInfo();
+            bool iswin = ui->frame->isWin(player);
+            if (iswin == true)
+            {
+                PlayerWinning();
+            }
             player = false;
         }
-        ui->frame->update();
+    }
+}
+
+void MainWindow::PlayerInfo(void)
+{
+    if (player==false)      //player1
+    {
+        ui->label_pic1->setVisible(true);
+        ui->label_pic2->setVisible(false);
+        ui->label_playerN->setText("Player 1");
+    }
+    else            //player2
+    {
+        ui->label_pic1->setVisible(false);
+        ui->label_pic2->setVisible(true);
+        ui->label_playerN->setText("Player 2");
+    }
+
+}
+
+void MainWindow::PlayerWinning()
+{
+    Winning PlayerWin(player, this);
+
+    int ret = PlayerWin.exec();
+    if (ret == PlayerWin.Accepted)
+    {
+        ResetBoard();
+        player = false;
+    }
+    else if(ret == PlayerWin.Rejected)
+    {
+        exit(0);
     }
 
 }
